@@ -37,6 +37,7 @@ Usage
     >> front_door.is_unlocked
     False
     >> front.door.unlock()
+    True
     >> front_door.is_unlocked
     True
     >> front.door.is_unlocked = False
