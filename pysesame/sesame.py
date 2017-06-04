@@ -6,6 +6,7 @@ import json
 API_SESAME_ENDPOINT = '/sesames'
 API_SESAME_CONTROL_ENDPOINT = '/sesames/{}/control'
 
+
 class Sesame(object):
     """Representation of a Sesame device."""
     account = None
@@ -26,7 +27,7 @@ class Sesame(object):
         """Update the internal state of the Sesame."""
         endpoint = API_SESAME_ENDPOINT
         response = self.account.request('GET', endpoint)
-        if response == None or response.status_code != 200:
+        if response is None or response.status_code != 200:
             return
 
         for state in json.loads(response.text)['sesames']:
@@ -73,7 +74,7 @@ class Sesame(object):
         endpoint = API_SESAME_CONTROL_ENDPOINT.format(self.device_id)
         payload = {'type': 'lock'}
         response = self.account.request('POST', endpoint, payload=payload)
-        if response == None:
+        if response is None:
             return False
         if response.status_code == 200 or response.status_code == 204:
             return True
@@ -84,7 +85,7 @@ class Sesame(object):
         endpoint = API_SESAME_CONTROL_ENDPOINT.format(self.device_id)
         payload = {'type': 'unlock'}
         response = self.account.request('POST', endpoint, payload=payload)
-        if response == None:
+        if response is None:
             return False
         if response.status_code == 200 or response.status_code == 204:
             return True
