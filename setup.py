@@ -4,12 +4,12 @@ long_description = open('README.rst').read()
 
 setup(
     name='pysesame',
-    version='0.0.1',
+    version='0.0.2',
     license='MIT',
     url='https://github.com/trisk/pysesame',
     author='Albert Lee',
     author_email='trisk@forkgnu.org',
-    description='Python API for Sesame smart lock',
+    description='Python API for Sesame smart locks',
     long_description=long_description,
     packages=find_packages(),
     include_package_data=True,
