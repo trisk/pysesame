@@ -9,6 +9,7 @@ API_SESAME_CONTROL_ENDPOINT = '/sesames/{}/control'
 
 class Sesame(object):
     """Representation of a Sesame device."""
+
     account = None
     _device_id = None
     _nickname = None
@@ -57,7 +58,7 @@ class Sesame(object):
 
     @is_unlocked.setter
     def is_unlocked(self, value):
-        """Set is_unlocked property"""
+        """Set is_unlocked property."""
         if value:
             self.unlock()
         else:

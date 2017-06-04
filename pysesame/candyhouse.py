@@ -15,6 +15,7 @@ _LOGGER = logging.getLogger(__name__)
 
 class CandyHouseAccount(object):
     """Representation of a CANDY HOUSE account."""
+
     api_url = API_URL
     auth_token = None
     email = None

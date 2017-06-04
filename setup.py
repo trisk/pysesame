@@ -1,3 +1,7 @@
+"""
+Python API for Sesame smart locks.
+"""
+
 from setuptools import setup, find_packages
 
 long_description = open('README.rst').read()
