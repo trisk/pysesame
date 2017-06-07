@@ -3,7 +3,7 @@ Module to control Sesame devices.
 """
 import json
 
-API_SESAME_ENDPOINT = '/sesames'
+API_SESAME_ENDPOINT = '/sesames/{}'
 API_SESAME_CONTROL_ENDPOINT = '/sesames/{}/control'
 
 
@@ -30,18 +30,15 @@ class Sesame(object):
         """Update the internal state of the Sesame."""
         self.use_cached_state = cache
 
-        endpoint = API_SESAME_ENDPOINT
+        endpoint = API_SESAME_ENDPOINT.format(self._device_id)
         response = self.account.request('GET', endpoint)
         if response is None or response.status_code != 200:
             return
 
-        for state in json.loads(response.text)['sesames']:
-            if state['device_id'] != self.device_id:
-                continue
-            self._nickname = state['nickname']
-            self._is_unlocked = state['is_unlocked']
-            self._api_enabled = state['api_enabled']
-            break
+        state = json.loads(response.text)
+        self._nickname = state['nickname']
+        self._is_unlocked = state['is_unlocked']
+        self._api_enabled = state['api_enabled']
 
     @property
     def device_id(self):

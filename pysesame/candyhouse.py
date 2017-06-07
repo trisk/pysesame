@@ -7,7 +7,7 @@ import requests
 
 API_URL = 'https://api.candyhouse.co/v1'
 API_LOGIN_ENDPOINT = '/accounts/login'
-API_SESAME_ENDPOINT = '/sesames'
+API_SESAME_LIST_ENDPOINT = '/sesames'
 API_AUTH_HEADER = 'X-Authorization'
 
 _LOGGER = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ class CandyHouseAccount(object):
     @property
     def sesames(self):
         """Return list of Sesames."""
-        response = self.request('GET', API_SESAME_ENDPOINT)
+        response = self.request('GET', API_SESAME_LIST_ENDPOINT)
         if response is not None and response.status_code == 200:
             return json.loads(response.text)['sesames']
 
