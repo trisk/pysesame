@@ -16,6 +16,7 @@ class Sesame(object):
     _nickname = None
     _is_unlocked = False
     _api_enabled = False
+    _battery = -1
 
     def __init__(self, account, state):
         """Initialise the Sesame device."""
@@ -24,6 +25,7 @@ class Sesame(object):
         self._nickname = state['nickname']
         self._is_unlocked = state['is_unlocked']
         self._api_enabled = state['api_enabled']
+        self._battery = state['battery']
         self.use_cached_state = False
 
     def update_state(self, cache=True):
@@ -39,6 +41,7 @@ class Sesame(object):
         self._nickname = state['nickname']
         self._is_unlocked = state['is_unlocked']
         self._api_enabled = state['api_enabled']
+        self._battery = state['battery']
 
     @property
     def device_id(self):
@@ -73,6 +76,13 @@ class Sesame(object):
         if not self.use_cached_state:
             self.update_state(False)
         return self._api_enabled
+
+    @property
+    def battery(self):
+        """Return Sesame battery status as an integer between 0 and 100"""
+        if not self.use_cached_state:
+            self.update_state(False)
+        return self._battery
 
     def lock(self):
         """Lock the Sesame. Return True on success, else False."""
