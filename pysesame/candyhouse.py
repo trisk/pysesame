@@ -20,21 +20,21 @@ class CandyHouseAccount(object):
     auth_token = None
     email = None
     password = None
+    session = None
 
     def __init__(self, email, password, api_url=None, timeout=5):
         """Initialise the account object."""
+        self.session = requests.Session()
         if api_url is not None:
             self.api_url = api_url
         self.login(email, password, timeout=timeout)
 
-    def login(self, email=None, password=None, session=None, timeout=5):
+    def login(self, email=None, password=None, timeout=5):
         """Log in to CANDY HOUSE account. Return True on success."""
         if email is not None:
             self.email = email
         if password is not None:
             self.password = password
-        if session is None:
-            session = requests.Session()
 
         url = self.api_url + API_LOGIN_ENDPOINT
         data = json.dumps({'email': self.email, 'password': self.password})
@@ -42,8 +42,8 @@ class CandyHouseAccount(object):
         response = None
 
         try:
-            response = session.post(url, data=data, headers=headers,
-                                    timeout=timeout)
+            response = self.session.post(url, data=data, headers=headers,
+                                         timeout=timeout)
         except requests.exceptions.ConnectionError:
             _LOGGER.warning("Unable to connect to %s", url)
         except requests.exceptions.Timeout:
@@ -61,10 +61,10 @@ class CandyHouseAccount(object):
 
         return False
 
-    def request(self, method, endpoint, data=None, payload=None, timeout=5):
+    def request(self, method, endpoint, payload=None, timeout=5):
         """Send request to API."""
-        session = requests.Session()
         url = self.api_url + endpoint
+        data = None
         headers = {}
 
         if payload is not None:
@@ -74,19 +74,21 @@ class CandyHouseAccount(object):
         try:
             if self.auth_token is not None:
                 headers[API_AUTH_HEADER] = self.auth_token
-                response = session.request(method, url, data=data,
-                                           headers=headers, timeout=timeout)
+                response = self.session.request(method, url, data=data,
+                                                headers=headers,
+                                                timeout=timeout)
                 if response.status_code != 401:
                     return response
 
             _LOGGER.debug("Renewing auth token")
-            if not self.login(session=session, timeout=timeout):
+            if not self.login(timeout=timeout):
                 return None
 
             # Retry  request
             headers[API_AUTH_HEADER] = self.auth_token
-            return session.request(method, url, data=data, headers=headers,
-                                   timeout=timeout)
+            return self.session.request(method, url, data=data,
+                                        headers=headers,
+                                        timeout=timeout)
         except requests.exceptions.ConnectionError:
             _LOGGER.warning("Unable to connect to %s", url)
         except requests.exceptions.Timeout:
