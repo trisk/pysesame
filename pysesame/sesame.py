@@ -11,6 +11,7 @@ class Sesame(object):
     """Representation of a Sesame device."""
 
     account = None
+    use_cached_state = False
     _device_id = None
     _nickname = None
     _is_unlocked = False
@@ -23,9 +24,12 @@ class Sesame(object):
         self._nickname = state['nickname']
         self._is_unlocked = state['is_unlocked']
         self._api_enabled = state['api_enabled']
+        self.use_cached_state = False
 
-    def update_state(self):
+    def update_state(self, cache=True):
         """Update the internal state of the Sesame."""
+        self.use_cached_state = cache
+
         endpoint = API_SESAME_ENDPOINT
         response = self.account.request('GET', endpoint)
         if response is None or response.status_code != 200:
@@ -47,13 +51,15 @@ class Sesame(object):
     @property
     def nickname(self):
         """Return the Sesame nickname."""
-        self.update_state()
+        if not self.use_cached_state:
+            self.update_state(False)
         return self._nickname
 
     @property
     def is_unlocked(self):
         """Return True if Sesame is unlocked, else False."""
-        self.update_state()
+        if not self.use_cached_state:
+            self.update_state(False)
         return self._is_unlocked
 
     @is_unlocked.setter
@@ -67,7 +73,8 @@ class Sesame(object):
     @property
     def api_enabled(self):
         """Return True if Sesame is API-enabled, else False."""
-        self.update_state()
+        if not self.use_cached_state:
+            self.update_state(False)
         return self._api_enabled
 
     def lock(self):
